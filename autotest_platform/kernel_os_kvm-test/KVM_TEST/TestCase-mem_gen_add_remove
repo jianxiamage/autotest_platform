@@ -1,0 +1,61 @@
+1.Test Case scripts:
+
+  kvm-mem-gen-remove.sh
+  kvm-mem-gen-add.sh
+----------------------------------------
+2.Scripts associated with test cases 
+
+  kvm-mem-gen-default.sh
+  kvm-mem-gen-info.sh
+  kvm-mem-gen-info-check.sh
+  kvm-mem-gen-remove-opt.sh
+  kvm-mem-gen-add-opt.sh
+  kvm-mem-gen-init_1G.sh
+----------------------------------------
+3.General scripts associated with test cases
+
+  kvm-enableStart.sh
+  kvm-enableShutdown.sh
+
+=======================================================
+
+1.内存设备通用方式增减
+
+  1.1 测试用例脚本
+
+	  1.1.1 删减内存
+		   kvm-mem-gen-remove
+           功能：删减内存测试用例的完整流程
+
+	  1.1.2 增加内存
+		   kvm-mem-gen-add
+           功能：增加内存测试用例的完整流程
+
+  1.2 测试用例脚本调用脚本
+      本部分的脚本均是测试用例要执行步骤中的被调用的功能
+      
+	  1.2.1 关闭虚拟机
+          kvm-enableShutdown.sh
+          功能：测试准备工作，将kvm虚拟机关机，为修改配置文件做准备
+
+	  1.2.2 查看虚拟机内存信息
+		  kvm-mem-gen-info.sh
+          功能：通过虚拟机配置文件查看内存信息
+
+	  1.2.3 设置虚拟机内存（删减内存）并使其生效
+		  kvm-mem--gen-remove-opt.sh
+          功能：查看虚拟机的内存情况
+
+	  1.2.4 设置虚拟机内存（删减内存）并使其生效
+		  kvm-mem-gen-add-opt.sh
+          功能：查看虚拟机的内存情况
+
+	  1.2.5 运行虚拟机
+		  kvm-enableStart.sh  #已经编写，稍作修改
+          功能：测试准备工作，将kvm开机
+
+	  1.2.6 虚拟机开机后检查修改后的内存信息
+		  kvm-mem-gen-info-check.sh
+          功能：虚拟机开机后检查内存信息，确认增加或删减内存后是否正确
+
+

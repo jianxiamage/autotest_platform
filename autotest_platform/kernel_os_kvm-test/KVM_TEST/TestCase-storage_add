@@ -1,0 +1,48 @@
+1.Test Case scripts:
+
+  kvm-storage-add.sh
+----------------------------------------
+2.Scripts associated with test cases 
+
+ kvm-storage-add-opt.sh
+ kvm-storage-info-default.sh
+ kvm-storage-info-add-check.sh
+
+----------------------------------------
+3.General scripts associated with test cases
+
+ storageAddTemplet.xml
+
+===============================================================
+
+
+1.测试用例脚本
+
+  1.1 kvm虚拟机增加存储设备
+      脚本：kvm-storage-add.sh
+      功能：用于给kvm虚拟机增加存储设备（添加虚拟硬盘），总体流程设计
+
+2.测试用例脚本调用的功能脚本
+
+  2.1 kvm虚拟机增加存储设备前检查
+      脚本：kvm-storage-info-default.sh
+      功能：kvm虚拟机增加存储设备前检查磁盘信息，看是否是默认的一个vda盘的情况，如果不是就退出
+
+  2.2 kvm虚拟机增加存储设备后检查
+      脚本：kvm-storage-info-add-check.sh
+      功能：kvm虚拟机增加存储设备前检查磁盘信息，看是否新加入了vdb的磁盘，并且原本的vda也要存在，否则测试失败
+
+  2.3 kvm虚拟机暂停测试
+      脚本：kvm-storage-add-opt.sh
+      功能：具体增加存储设备的流程
+
+3.测试用例脚本涉及到的关联文件
+
+  3.1 新增存储设备的标准文件
+      文件名：storageAddTemplet.xml
+      功能：为将新的存储设备(硬盘)信息加入到xml文件中，通过调研方法与试验，制作了新增存储设备信息所使用的文件，将其插入
+           到kvm虚拟机的xml文件中
+  3.2 制作新的qcow2文件到目标目录下
+      文件名：fedora21-1.qcow2
+      功能：新增的存储设备需要关联一个qcow2文件，通过调查，可以使用qemu-img create qcow2 命令制作
+

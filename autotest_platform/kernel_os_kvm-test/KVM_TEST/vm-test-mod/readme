@@ -1,0 +1,15 @@
+
+How to use：
+	make       	# Generate testmod.ko
+	make clean 	#
+       ./vm-insmod.sh	# to test insmod testmod.ko
+       ./vm-rmmod.sh	# to test rmmod  testmod.ko
+
+
+File list:
+
+	Makefile     # Make testmod.ko
+	testmod.c    # source file
+	testmod.ko   # test kernel module
+	vm-insmod.sh # insmod script
+	vm-rmmod.sh  # rmmod script

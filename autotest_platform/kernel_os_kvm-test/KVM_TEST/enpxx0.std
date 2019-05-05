@@ -1,0 +1,3 @@
+DEVICE="enp7s0"
+ONBOOT=yes
+BRIDGE=br0

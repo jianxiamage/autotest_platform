@@ -1,0 +1,72 @@
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh edit fedora21
+or other application using the libvirt API.
+-->
+
+<domain type='kvm'>
+  <name>fedora21</name>
+  <memory unit='KiB'>2097152</memory>
+  <currentMemory unit='KiB'>2097152</currentMemory>
+  <vcpu placement='static'>2</vcpu>
+  <os>
+    <type arch='mips64el' machine='loongson3a'>hvm</type>
+    <loader readonly='yes' type='rom'>/usr/share/qemu/ls3a_bios.bin</loader>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode='custom' match='exact' check='partial'>
+    <model fallback='allow'>Loongson-3A</model>
+  </cpu>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>/usr/bin/qemu-system-mips64el</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/home/loongnix.qcow2'/>
+      <target dev='vda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </disk>
+    <controller type='pci' index='0' model='pci-root'/>
+    <controller type='virtio-serial' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </controller>
+    <interface type='network'>
+      <source network='default'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='2'/>
+    </channel>
+    <graphics type='spice' autoport='yes' listen='0.0.0.0'>
+      <listen type='address' address='0.0.0.0'/>
+      <image compression='off'/>
+    </graphics>
+    <video>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </video>
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+    </memballoon>
+  </devices>
+</domain>

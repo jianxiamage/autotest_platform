@@ -1,0 +1,145 @@
+#!/bin/bash
+
+#set NoPassword login for ssh
+#sh connRemoteKVM.sh
+
+#kvmName='fedora21-1'
+
+#sh getKVMIP.sh
+#KVMIP=$(cat /home/$kvmName.IP)
+
+#scp /home/stream.c root@$KVMIP:/home
+
+#scp /home/spec2006-loongson.tar.gz root@$KVMIP:/home
+
+#ssh $KVMIP
+
+srcDir='/home/loongson'
+
+
+echo "performance Test:[stream] Begin-----------------------------------------------"
+
+cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/kernel-test/cases
+
+gcc -O2 stream.c -fopenmp -DN=40000000 -o  stream-1
+
+./stream-1 >> result1.log
+./stream-1 >> result1.log
+./stream-1 >> result1.log
+./stream-1 >> result1.log
+./stream-1 >> result1.log
+
+#exec 5 times,and get the average value
+echo "exec 5 times,and get the average value"
+
+grep Copy result1.log
+
+grep Scale result1.log
+
+grep Add  result1.log
+
+grep Triad result1.log
+
+echo "performance Test:[stream] End-----------------------------------------------"
+
+echo "performance Test:[speccpu2006] Begin-----------------------------------------------"
+
+cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/kernel-test/cases
+tar zxf spec2006-loongson.tar.gz -C /home
+cd /home/spec2006-loongson
+./myrun.sh
+
+echo "performance Test:[speccpu2006] End-----------------------------------------------"
+
+
+
+echo "performance Test:[x11perf] Begin-----------------------------------------------"
+ 	
+
+#1. 启动终端
+#2. 安装x11perf ：yum install -y x11perf （如果已有则此步骤可省略）
+#yum install -y x11perf
+#3. 循环执行命令“x11perf -all”
+#4. 共运行 2 小时
+
+yum install -y x11perf
+#create sh file:x11perf.sh to  Loop execution 
+cat >> x11perf.sh <<EOF 
+#!/bin/bash
+while true
+do
+	x11perf -all
+done
+
+EOF
+
+#sh x11perf.sh
+chmod +x x11perf.sh
+#set timeout 2 hours
+timeout 7200 ./x11perf.sh
+
+echo "Find result:~/loongson-testsuite/result/117-x11perf.log"
+echo "performance Test:[x11perf] End-----------------------------------------------"
+
+echo "performance Test:[netperf] Begin-----------------------------------------------"
+cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/scripts/4.performance_testing/4.7netperf
+#Need Network Card environment，can not test!!!
+echo "performance Test:[netperf] End-----------------------------------------------"
+
+
+echo "performance Test:[wget] Begin-----------------------------------------------"
+cd $srcDir/loongnix-testsuite/shell
+./wget-test.sh
+
+echo "output files:result.log and md5sumresult.log"
+echo "Compare the 2 files..."
+#vim -d result.log md5sumresult.log
+diff result.log md5sumresult.log
+echo "You can find the difference by [vim -d result.log md5sumresult.log] or other way"
+echo "performance Test:[wget] End-----------------------------------------------"
+
+
+echo "performance Test:[iozone] Begin-----------------------------------------------"
+#cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/scripts/4.performance_testing/4.6iozone
+
+#Need second Disk mount,can not test!!!
+echo "performance Test:[iozone] End-----------------------------------------------"
+
+echo "performance Test:[specjvm2008] Begin-----------------------------------------------"
+
+cd $srcDir/loongnix-testsuite/shell
+
+oldName='TEST_UNITS=(stream_test lmbench_test specjvm2008_test unixbench_test unixbench2d_test speccpu2000_test)'
+newName='TEST_UNITS=(specjvm2008_test)'
+
+\cp -f $srcDir/loongnix-testsuite/shell/autotest.sh specjvm2008_test.sh
+sed -i "s/${oldName}/${newName}/g" specjvm2008_test.sh
+
+chmod +x specjvm2008_test.sh
+./specjvm2008_test.sh
+
+echo "Find result(Log path):/home/loongson/loongnix-testsuite/9-内核及稳定性测试/kernel-test/cases/test-log/specjvm2008.log"
+echo "performance Test:[specjvm2008] End-----------------------------------------------"
+
+
+echo "performance Test:[lmbench_lat_ctx_lat_mem_rd] Begin-----------------------------------------------"
+
+#TODO.....
+#Because Need 2 terminal...
+
+#cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/kernel-test/cases
+
+#tar zxvf lmbench3-edit.tar.gz -C /home/
+
+#cd /home/lmbench3;
+
+#make results
+
+#
+
+echo "performance Test:[lmbench_lat_ctx_lat_mem_rd] End-----------------------------------------------"
+
+
+
+#After finish all the test,ssh logout
+#exit

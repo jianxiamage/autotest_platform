@@ -1,0 +1,4 @@
+  menuentry 'Loongnix-kvm-host'{
+  linux /boot/kvm-host-vmlinuz root=/dev/sda1
+  boot
+  }

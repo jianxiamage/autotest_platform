@@ -1,0 +1,53 @@
+1.Test Case scripts:
+
+  kvm-mem-ballon-add.sh
+  kvm-mem-ballon-remove.sh
+----------------------------------------
+2.Scripts associated with test cases 
+
+  kvm-name_stat.sh
+  kvm-mem-ballon-default.sh
+  kvm-mem-ballon-info.sh
+  kvm-mem-ballon-add-opt.sh
+  kvm-mem-ballon-remove-opt.sh
+  kvm-mem-ballon-info-check.sh
+----------------------------------------
+3.General scripts associated with test cases
+
+  kvm-enableStart.sh
+  kvm-enableShutdown.sh
+
+============================================================
+
+1.ballon增减内存
+  1.1 测试用例脚本
+
+	  1.1.1 ballon方式删减内存
+		   kvm-mem-ballon-remove
+           功能：删减内存测试用例的完整流程
+
+	  1.1.2 ballon方式增加内存
+		   kvm-mem-ballon-add
+           功能：增加内存测试用例的完整流程
+
+  1.2 测试用例脚本调用脚本
+      本部分的脚本均是测试用例要执行步骤中的被调用的功能
+      
+	  1.2.1 运行虚拟机
+		  kvm-enableStart.sh  #已经编写，稍作修改
+          功能：测试准备工作，将kvm开机
+
+	  1.2.2 查看虚拟机名称和状态
+		  kvm-name_stat.sh
+          功能：虚拟机开机后，检查虚拟机名称和状态是否正常
+
+	  1.2.3 查看虚拟机内存
+		  kvm-mem-ballon-info.sh
+          功能：查看虚拟机的内存情况
+	  1.2.4 减少虚拟机内存
+		  kvm-mem--ballon-remove-opt.sh
+          功能：减少虚拟机内存并进行确认
+
+	  1.2.5 增加虚拟机内存
+		  kvm-mem--ballon-add-opt.sh
+          功能：增加虚拟机内存并进行确认

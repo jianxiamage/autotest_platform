@@ -1,0 +1,53 @@
+#!/usr/bin/expect 
+set timeout 20 
+ 
+if { [llength $argv] < 4} { 
+    puts "Usage:" 
+    #puts "$argv0 local_fddile remote_path" 
+    puts "$argv0 host username password shName" 
+    exit 1 
+} 
+ 
+set host [lindex $argv 0]
+set username [lindex $argv 1]
+set password [lindex $argv 2]
+set shName [lindex $argv 3]
+#set remote_file [lindex $argv 3]
+#set local_file [lindex $argv 4]
+#spawn scp  $username@$host:$remote_file $local_file
+#add check shName
+#set shPara "source $shName"
+set shPara "sh $shName"
+puts "shPara:$shPara"
+spawn ssh  $username@$host $shName
+ 
+set passwderror 0 
+ 
+#spawn scp $local_file $remote_path 
+ 
+expect { 
+    "*assword:*" { 
+        if { $passwderror == 1 } { 
+        puts "passwd is error" 
+        exit 2 
+        } 
+        set timeout 1000 
+        set passwderror 1 
+        send "$password\r" 
+        exp_continue 
+    } 
+    "*es/no)?*" { 
+        send "yes\r" 
+        exp_continue 
+    } 
+    timeout { 
+        puts "connect is timeout" 
+        exit 3 
+    } 
+
+#interact
+}
+
+#interact
+
+#expect eof

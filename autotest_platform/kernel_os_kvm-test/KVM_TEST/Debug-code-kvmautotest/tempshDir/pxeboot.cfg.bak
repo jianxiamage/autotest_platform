@@ -1,0 +1,28 @@
+timeout 5
+default 0
+showmenu 1
+
+title 'Loongnix-kvm-host'
+        kernel (wd0,0)/boot/vmlinuz-3.10.0-4.fc21.loongson.kvmhost.mips64el
+        args  root=/dev/sda1
+
+title Loongnix
+	kernel (wd0,0)/boot/vmlinuz-3.10.84-17.fc21.loongson.mips64el
+	initrd (wd0,0)/boot/initramfs-3.10.84-17.fc21.loongson.mips64el.img
+	args  root=/dev/sda1 ro rhgb quiet loglevel=0 LANG=zh_CN.UTF-8
+
+title Rescue
+	kernel (wd0,0)/boot/vmlinuz-0-rescue-b10e2cb86f0d4cc3b8a9382a5caf2071
+	initrd (wd0,0)/boot/initramfs-0-rescue-b10e2cb86f0d4cc3b8a9382a5caf2071.img
+	args  root=UUID=8cea74a6-b4d7-4b54-a23a-efc75b413cef ro rhgb quiet loglevel=0
+
+### BEGIN /etc/grub.d/10_linux ###
+    
+hello
+    
+### BEGIN
+
+### BEGIN /
+    
+
+### BEGIN 

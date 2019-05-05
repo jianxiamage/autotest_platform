@@ -1,0 +1,5 @@
+    
+menuentry 'Loongnix-kvm-host'{
+        linux /boot/vmlinuz-3.10.0-1.fc21.loongson.kvmhost.mips64el root=/dev/sda1
+        boot
+}

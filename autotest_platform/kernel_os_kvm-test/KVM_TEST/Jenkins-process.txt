@@ -1,0 +1,44 @@
+
+本文主要记录Jenkins自动化流程
+
+大任务:
+A-KVM-自动化测试
+
+子任务：
+1.安装kvm环境所需的包
+  P01_install_pkg	
+
+2.设置开机启动菜单配置文件，添加kvm开机启动项
+  P02_verify_env
+
+3.重启宿主机
+  P03_reboot_host
+
+4.等待监测是否重启完成
+  P03_test_reboot_start
+
+5.宿主机开机后，检查libvirtd服务是否开机启动
+  P04_verify_libvirtd
+
+6.创建虚拟机
+  P05_import_vm	
+  导入方式
+
+7.虚拟机开机测试
+  06_start_vm
+
+8.获取虚拟机IP
+  P07_getIP_vm
+	
+9.执行远程虚拟机命令
+  P08_remoteCmd_vm
+	
+10.执行远程虚拟机脚本
+  P09_remoteSh_vm
+	
+11.虚拟机性能稳定性测试
+  P10_Test_Begin
+
+12.虚拟机关机
+  P10_shutdown_vm
+

@@ -1,0 +1,50 @@
+#!/usr/bin/expect 
+set timeout 20 
+ 
+if { [llength $argv] < 2} { 
+    puts "Usage:" 
+    #puts "$argv0 local_fddile remote_path" 
+    puts "$argv0 host password"
+    exit 1 
+} 
+ 
+set host [lindex $argv 0]
+set password [lindex $argv 1]
+
+#create public key
+#ssh-keygen -r rsa
+
+#copy the key to remote node
+spawn ssh-copy-id root@$host 
+#spawn ssh-copy-id -i ~/.ssh/id_rsa.pub root@host
+ 
+#spawn ssh-copy-id -i ~/.ssh/id_rsa.pub root@host
+
+set passwderror 0
+
+expect { 
+    "*assword:*" { 
+        if { $passwderror == 1 } { 
+        puts "passwd is error" 
+        exit 2 
+        } 
+        set timeout 1000 
+        set passwderror 1 
+        send "$password\r" 
+        exp_continue 
+    } 
+    "*es/no)?*" { 
+        send "yes\r" 
+        exp_continue 
+    } 
+    timeout { 
+        puts "connect is timeout" 
+        exit 3 
+    } 
+
+#interact
+}
+
+#interact
+
+#expect eof

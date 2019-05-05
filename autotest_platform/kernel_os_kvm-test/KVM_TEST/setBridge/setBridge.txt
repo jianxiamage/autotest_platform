@@ -1,0 +1,16 @@
+#对网络接口（fedora21下例如:enp7s0）的修改
+#cat /etc/sysconfig/network-scripts/ifcfg-eth0
+DEVICE="eth0"
+ONBOOT=yes
+BRIDGE=br0
+#说明：以上三项是必须的，至于HWADDR、NAME等,待验证确认
+
+#对桥接设备（图2中的br0）的修改
+cat /etc/sysconfig/network-scripts/ifcfg-br0
+DEVICE="br0"
+TYPE=Bridge
+BOOTPROTO=dhcp
+ONBOOT=yes
+#说明：这个设备大多数情况是没有的，需要自己创建，同时这个设备是可以有网址的
+
+

@@ -1,0 +1,411 @@
+======================================================================================================================================================================
+Foreword: This document introduces the design idea and summary process of KVM automatic test platform.
+
+The goal is to facilitate understanding of the overall project architecture and prevent forgetting.
+
+
+Project introduction
+
+
+Project Name: KVM Automated Test Platform
+
+Project function:
+
+After updating KVM-related software packages, the automatic testing function of virtual machine is realized.
+
+The main content of the code base of this project is to implement various functions and test scripts written for this automated testing platform.
+
+
+Detailed introduction:
+
+
+This directory contains the code of the KVM test automation platform.
+
+The current version is the first version.
+
+
+========================================================================================================================================================================
+
+The functions implemented include:
+
+
+1. KVM environment construction
+
+	Various packages needed to install the KVM environment
+
+	The premise is to install the test source:
+
+	Yum install loongnix-test-release-y & Yum makecache
+
+
+Script:
+
+	Kvm-install.sh						// Install the test source, install the package needed for the KVM environment
+
+
+	The operation in kvm-testPre.sh		//kvm-install.sh can be transplanted to this script, which is executed first and handled exceptionally.
+
+
+
+Be careful:
+
+[1] Before installing the host, it is necessary to configure the host machine.
+
+	For example, expect needs to be installed on the host
+
+	For sshd service, it can be turned on and set to start automatically.
+
+	The firewall is set to open, because the firewall closure will cause KVM to be unable to access the external network
+
+	The order is as follows:
+
+	yum install expect-y
+
+	systemctl start sshd
+
+	systemctl enable sshd
+
+	systemctl start firewalld
+
+	systemctl enable firewalld
+
+
+[2] Enter qcow2 image file
+
+	The qcow2 image needs to be placed under /home, and qcow2 needs to be sshd boot-up to ensure that the virtual machine can be connected successfully remotely by the host.
+
+
+2. Verify the operating system platform environment and set up boot menu configuration file
+
+	First, determine the OS motherboard type: PMON, UEFI, Kunlun
+
+	Depending on the type of motherboard, select different boot-up menu configuration files
+
+	The boot-up menu configuration file can be divided into two situations:
+
+	PMON: boot.cfg
+
+	Non-PMON (UEFI or kunlun): grub.cfg
+
+	File absolute path (/boot/boot.cfg)
+
+	(/boot/grub.cfg)
+
+
+
+	According to different motherboard models and kernel version numbers, the standard reference files are set up.
+
+	Add boot-up menu items and modify the kernel version to the latest
+
+
+	Note: Existing programs support only one kernel
+
+	By default, if the kernel is updated, the version number is changed to the latest version when modifying the startup menu.
+
+	If you have never installed a KVM environment, you need to add boot-up menu items
+
+	If you have installed the KVM environment, the boot menu item has added the KVM boot item.
+
+	Then you need to reinstall the updated package.
+
+	You also need to replace the kernel version number in the boot menu item (actually the name of the entire kernel file is changed)
+
+
+Script:
+
+	set_bootFile.sh
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+3. After the environment is built, the host reboot
+
+	command:
+
+	shutdown-r (default wait 1 minute, minimum unit is minutes, not seconds)
+
+
+4. Verify that the host is booted successfully
+
+
+	Find another machine: use Ping to wait for a specified time to Ping
+
+	Script:
+
+	checkConnRemote.sh
+
+
+
+5. Verify that the KVM environment is properly built after the host is powered on
+
+	The method is to verify whether libvirtd has started automatically, and if it starts, it proves that the KVM environment has been successfully built.
+
+	kvm-check Install.sh
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	After the KVM environment is successfully built, the basic functions are tested
+
+	In the first edition, for automation, a KVM case is first supported, and the virtual machine name is defined as: Fedora 21-1
+
+
+6.kvm creation
+
+	Import mode, create virtual machine
+
+
+	Input: qcow2 mirror
+
+	Create with the virsh command
+
+	Consider many creation scenarios, such as whether they have been created, whether they have been renamed, if they have been created, and whether the state of the machine is turned on.
+
+	If the shutdown is deleted directly, if it is booted, it needs to be shut down first, and then deleted, otherwise there will be errors.
+
+	Script:
+
+	kvm-create.sh
+
+
+7.kvm start
+
+	start command
+
+	exception handling
+
+	...
+
+	Script:
+
+	kvm-start.sh
+
+
+8.kvm shutdown
+
+	shutdown
+
+	exception handling
+
+	...
+
+Script:
+
+	kvm-shutdown.sh
+
+
+9.kvm delete
+
+	Delete command
+
+	exception handling
+
+	...
+
+Script:
+
+	kvm-delete.sh
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	KVM startup verification
+
+
+10.kvm list
+
+	You can view the currently created KVM list
+
+	Script:
+
+	kvm-showList.sh
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Start testing on KVM
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+11. Creating Virtual Machines
+
+	Create command
+
+	exception handling
+
+	...
+
+	Consider making the Jenkins process by continuing the steps above, assuming that they are recreated here
+
+
+12. Boot-up of Virtual Machine
+
+	Boot command
+
+	exception handling
+
+	...
+
+
+13. Getting IP of Virtual Machine
+
+	Delete the old ARP cache and retrieve the ARP cache.
+
+	Then the IP address is filtered out according to the MAC address.
+
+	For IP address acquisition, it is temporarily obtained by the above methods.
+
+	Other approaches need to be explored later.
+
+	Script:
+
+	GetKVMIP.sh
+
+
+14. Remote Virtual Machine Execution Command
+
+	remoteStartTest.sh//Local host executes remote KVM commands to verify that KVM can perform simple operations after booting up
+
+	sshExecCmd.exp//Call password-free expect script
+
+
+
+15. Remote Virtual Machine Execution Script
+
+	remoteExSh.sh//Remote Execution Process Switching Test (x.sh)
+
+
+	remoteExTest.sh// Remote Execution Script Testing
+
+
+	uploadFile2KVM.sh// Upload local files to remote virtual machines ahead of time
+
+
+16. Remote connection KVM
+
+	The remote connection first obtains the IP, then SSH logs on to the virtual machine to prepare for the next performance and stability test on kvm.
+
+	connRemoteKVM.sh//After finding the virtual machine IP, connect remotely to the virtual machine
+
+	sshConnKVM.exp//Password-free, copy SSH keys to remote virtual machines
+
+
+17.kvm stability test
+
+	(1) Download the test suite
+
+		kvm-download TestSuite.sh
+
+	(2) Performance testing
+
+		perfmanceTest.sh
+
+	(3) Stability test
+
+		stabilityTest.sh
+
+
+
+18. shell log
+
+	Script:
+
+	kvm-log.sh
+
+
+19. Python log
+
+	Script:
+
+	log.py
+
+
+20. Common Function Processing
+
+	Script:
+
+	common-fun.sh
+
+
+
+21. exception handling
+
+	Script:
+
+	exceptionTrap.sh
+
+
+22. Virtual Machine Reference File
+
+	Templet.xml
+
+	Create virtual machines as templates
+
+
+23. Adding Content Reference Files to Boot Start Menu
+
+
+	- pmonStd.file										//PMON motherboard standard file
+
+	- Backup of standard files on pmonStd. file. bak    //PMON motherboard (because the kernel version number needs to be changed)
+
+	- pmonboot.cfg//PMON motherboard test file
+
+	- backup of pmonboot.cfg.bak                        //PMON motherboard test files (because of local test simulations, configuration files cannot be really modified)
+
+	- pxeStd.file//non-PMON motherboard standard file
+
+	- Backup of standard files on pxeStd. file. bak     // non-PMON motherboard (because the kernel version number is to be modified)
+
+	- pxeboot.cfg//non-PMON motherboard test file
+
+	- backup of pxeboot.cfg.bak                         //non-PMON motherboard test files (because of local test simulations, configuration files cannot be really modified)
+
+
+24. Remote Virtual Machine Execution Command
+
+	RemoteStartTest.sh                                     //Local host executes remote KVM commands to verify that KVM can perform simple operations after booting up
+
+	SshExecCmd.exp                                         //Call password-free expect script
+
+
+
+25. Remote Virtual Machine Execution Script
+
+	remoteExSh.sh                                          //Remote Execution Process Switching Test (x.sh)
+
+
+	remoteExTest.sh                                       // Remote Execution Script Testing
+
+
+	uploadFile2KVM.sh                                     // Upload local files to remote virtual machines ahead of time
+
+
+26. Remote connection KVM
+
+	The remote connection first obtains the IP, then SSH logs on to the virtual machine to prepare for the next performance and stability test on kvm.
+
+	connRemoteKVM.sh                                     //After finding the virtual machine IP, connect remotely to the virtual machine
+
+	sshConnKVM.exp                                       //Password-free, copy SSH keys to remote virtual machines
+
+
+26.kvm stability test
+
+	(1) Download the test suite
+
+	    kvm-download TestSuite.sh
+
+	(2) Performance testing
+
+    	perfmanceTest.sh
+
+	(3) Stability test
+
+	    stabilityTest.sh
+
+
+========================================================================================================================================================================
+

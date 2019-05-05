@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+srcDir='/home/loongson'
+
+testCase='4.7.2netperf'
+
+echo "---------------板载网卡netperf通过交换机测试---------------------"
+echo "performance Test:[ $testCase ] Begin--------------------------------------------]"
+cd $srcDir/loongnix-testsuite/9-内核及稳定性测试/scripts/4.performance_testing/4.7netperf
+netperf_direct_start_time=`echo $(date +"%F %T")`
+
+./4.7.2netperf_KM.sh
+#echo "You can find"
+
+if [ $? -ne 0 ]; then
+	    echo " $testCase test failed, check it ........."
+	    exit 1
+fi
+
+netperf_direct_end_time=`echo $(date +"%F %T")`
+echo "performance Test:[ $testCase ] End--------------------------------------------"
+echo "start_time:[$netperf_direct_start_time]-----end_time:[$netperf_direct_end_time]----------------------------------------------"
